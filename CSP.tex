@@ -1,0 +1,130 @@
+%	The Common RISC Platform Specification version ZERO
+%
+%	CHANGES:
+%		27-12-20: jcalligeros - Intial version
+%
+%	Copyright (C) 2020 Pacific Semiconductor
+
+\documentclass[12pt]{report}
+\usepackage[a4paper, portrait, margin=25mm]{geometry}
+\usepackage[parfill]{parskip}
+\usepackage{yhmath}
+\usepackage{listings}
+\lstdefinestyle{routines}{
+	language=C,
+	numbers=left,
+	stepnumber=1,
+	numbersep=10pt,
+	tabsize=4,
+	showspaces=false,
+	showstringspaces=true
+}
+\title{The Common SPARC Platform\\\large{A unified compute platform for the post-x86 desktop}}
+
+\author{Pacific Semiconductor}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\section{Preface}
+In 2006, then-CEO of Apple Steve Jobs got on stage at the Worldwide Developers Conference and announced that the company
+would be switching over the Macintosh to IA-32 from PowerPC starting from 2007. This was done in response to the enormous
+performance gains Intel was making at the time; the company had put the failed NetBurst microarchitecture to rest, and
+had just released chips based on Core, which was a derivative of the older P6 microarchitecture. Core-based chips were
+significantly more efficient, offered higher performance and were cheaper than the AIM Alliance's PowerPC offerings. IBM
+and Motorola were simply unable to continue increasing the performance of their PowerPC chips to match.
+
+This Intel transition was the final nail in the coffin for the RISC desktop. The mid-90s and early 2000s saw fierce
+competition between RISC architectures for the desktop market from Acorn's ARM and clones thereof, to SGI and their MIPS
+based workstations, to Tadpole and their SPARC-based devices. By the time Apple had announced its transistion, Macs were
+the last non-x86 client devices left on the market (ignoring the portable device market, which had by this time been
+completely dominated by ARM).
+
+However, beginning around 2013, performance gains started drying up. Desktop chips were no longer gaining 30\% or 40\%
+performance relative to their predecessors. The high-end market stagnated, with performance uplifts getting down to single-digit
+percentages, all the while prices crept ever upward.
+
+And now, in 2020, another Apple CEO takes the stage at WWDC to announce that the Macintosh will be transistioning away
+from IA-32 and to ARM, starting with the MacBooks. And once again, this is due to the performance, efficiency and value
+stagnation of x86-based offerings. The difference, however, is that this time Apple is setting the trend, not completing
+it. Apple is the first chip vendor to put forward an ARM-based SoC that can truly compete with x86- offerings. They will
+not be the last.
+
+We are on the verge of a radical industry shakeup. Over the next five years, many chip vendors will enter the market
+with their own ARM-based SoC offerings. The influence Intel and AMD have over the client compute market will continue to
+dwindle, and with that many software developers will turn their attention away from optimising for the x86 platform and
+towards other platforms with expanding market shares.
+
+However, we believe that this will only cause a net detriment to the market. Current trends indicate that vendors are
+attempting to implement proprietary designs that cause vendor lockout -- a practice that is strongly frowned upon and
+actively resisted by the workstation and mobile PC market segments. This practice has been accepted in the portable device
+market only due to the form factor itself precluding extensibility and interoperability. Should chip vendors be allowed
+to fragment the market with proprietary platforms, this segment of the market will lose all that makes it so attractive
+to consumers and developers alike.
+
+We see a bright future for the desktop and laptop markets, however not if industry players fragment these markets with
+proprietary platforms that force consumers to lock themselves in to a single ecosystem. The major drawcard of the PC
+market is the fierce competition enabled by a somewhat standardised platform. We believe it is in the best interests
+of the industry for a common platform to remain the industry standard.
+
+We bring you the \textbf{Common SPARC Platform} in the hope that it will serve as a base definition for the industry to
+use going forward. 
+
+\section{Glossary of Terms}
+This document refers to many complex computer science principles. This glossary serves to define a standard set of terms
+that will be used herein.
+
+\tableofcontents
+\newpage
+
+\chapter{Heterogeneous Compute}
+\large{The Common SPARC Platform embraces the principles of heterogeneous compute, allowing any CSP implementation to be
+as general-purpose or as specialised as the user sees fit.}
+
+\newpage
+
+\section{Background}
+The original 8086, up to the Intel 386, did not include hardware floating point units, instead relying on software routines
+to emulate floating point logic. Intel instead manufactured floating point coprocessors in the x87 series of chips, a kind
+of primitive fixed-function accelerator. As a result of advances in photolithography, hardware floating point logic was
+able to beincorporated into x86 chips starting with the 486. This was the beginning of an endeavour to integrate as much
+functionality on a single chip as possible, culminating  with  the modern x86 chips we see today with ISA extensions and
+hardware logic to cover almost any data type and manipulation imaginable.
+
+This has led to the overcomplication of control logic and pipeline design in highly integrated SoCs, which detriments
+performance, wastes valuable die space, and  increases power consumption. Heterogeneous compute involves decreasing
+reliance on general-purpose logic by  incorporating fixed-function ’accelerators’ into the system. These accelerators
+can be highly optimised to handle specific types of data and operations. They can be thought of as the hardware extension
+of the Unix Philosophy – do one thing, and do it well. Rather than try to integrate vast amounts of logic into the CPU
+core, workloads for which anaccelerator is present in the system are offloaded to that accelerator. 
+
+A common example of this type of offloading is the processing of 3D graphics, multimedia and other SIMD workloads by a GPU,
+rather than the CPU. While this model of computing was historically unfeasible due to low bandwidth and high latency 
+interconnects, refinements in digital signal processing have enabled the development of suitable interconnects, such as
+PCI Express 4.0, AMD’s Infinity Fabric and Intel’s EMIB. These interconnects, coupled with advanced IC packaging
+techniques (multi-chipmodules, 3D stacking, etc.) have allowed the ideas of heterogeneous compute to be realised in hardware.
+
+Current implementations of fixed-function accelerators focus mainly on high-throughput,highly specialised workloads such
+as machine learning and cryptography (i.e.  cryptocur-rency mining ASICs). However, accelerators can also be used in a
+more consumer-oriented way, accelerating common or repetitive tasks that have a well-defined characteristic, such as
+encryption and media encode/decode. In this way, the CPU cores are freed up to be used by applications that require more
+generalised functionality. Hardware accelerators also streamline software development by eliminating the need for developers
+to write and maintain software libraries to provide functionality that has been implemented in system hardware. This allows
+developers to focus instead on improving the security of their packages as well as the user experience.
+
+\section{System Overview}
+While the CSP aims to promote heterogeneous compute as much as possible, the importance of being able
+to implement a minimal system is also recognised. Thus, the Platform's specification makes no significant change to the
+way in which a CPU interacts with the rest of the system. This allows CSP-compliant systems to be implemented with only
+a single CPU core and some system memory.
+
+What does change, however, is the relationship between the CPU, memory and the rest of the system. In a CSP-compliant
+system,
+
+\chapter{SPARC Core Design}
+
+
+\end{document}
