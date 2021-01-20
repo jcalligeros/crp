@@ -21,8 +21,6 @@
 }
 \title{The Common RISC Platform\\ \large{Desktop Edition}}
 
-\author{Pacific Semiconductor}
-
 \begin{document}
 
 \maketitle
@@ -34,34 +32,31 @@
 
 %----------------------------------------------------------------------------------------------------------------------%
 \section{Preface}
-The PC platform used to be quite open. In the early days, companies would cooperate to design and adopt unified
-standards that allowed for most parts to be cross-compatible with other vendors' machines. This enabled competition not
-based on vendor lock-in, but on the strengths of the product itself. It would surprise some to learn that once upon a time,
-you could buy a PC that shipped with a Pentium III, take the CPU out, and then replace it with a VIA C3. Or even earlier
-than that, go between a P5 Pentium, AMD K6 or Cyrix 6x86. Those same Socket 7 machines were even backward compatible
-with CPUs for older sockets.
+The client desktop computer market is at a crossroads. Recent advancements in technology have, for the first time since
+the mid 90s, given the PC an existential threat -- certain RISC-based chips are now consistently outperforming certain
+x86-based solutions, and both developers and consumers alike are noticing this. Many people are abandoning their desktop
+and laptop computers, happy to instead rely on their smartphones and tablets. Both of these types of devices usually contain
+some ARM-based SoC. x86-based PCs continue to endure in the high-performance and enthusiast markets, but for how long?
 
-Compare this to the modern PC platforms. Not only are you locked into a specific vendor, in many cases you are restricted
-from using your system to its fullest capabilities unless you purchase their most expensive motherboards. In Intel's case,
-for the past decade or so, consumers have been prevented from overclocking their CPUs unless it is socketed into a board
-with the Z-series chipset, even if the CPU itself has an unlocked clock multiplier. Recently Intel has doubled down on this
-practice too, disabling the use of XMP DRAM profiles on lower-end chipsets. This makes absolutely no technical sense
-since the memory controller is integrated into the CPU; if the CPU and DRAM modules support XMP, then it technically would
-function. This is nothing more than a slimy attempt to segment the market to shift ill-informed consumers towards higher
-margin products.
+Ask any PC enthusiast why they continue to use the platform despite `better' alternatives existing, and they'll mostly
+respond with something related to customisation. Traditionally, the PC platform has been the most flexible -- users can
+usually replace their GPU, system memory, mass storage and other components at will. While this flexibility has been somewhat
+eroded in recent times (e.g. one can no longer drop an AMD package into an Intel-socketed motherboard), the platform
+remains more flexible than any other comparable alternative.
 
-This state of affairs sickens me greatly. The success of vendor lock-in in the mobile industry is not something to be
-lauded or coveted. It should be viewed by all with nothing but the utmost scorn and contempt. Everything that makes (or made)
-the PC special is under threat from increasingly anti-consumer practices from companies with deeply entrenched monopolies
-in their respective sectors. Graphics accelerator manufacturers are trying to force the adoption of proprietary APIs and
-libraries, CPU vendors are locking traditionally common features behind premium paywalls, and major operating system
-vendors are trying to wrest control of the hardware ecosystem for themselves.
+As RISC-based SoCs begin to outperform even high-end x86-based chips, there is a real risk that SoC vendors use the opportunity
+to develop closed, locked down platforms that fly in the face of everything the PC stands for. This of course would have serious
+implications for not only users but also developers of open hardware and software, as their projects become increasingly fragmented
+in order to support multiple disparate
 
-The corporate giants that have been entrusted with the platform have failed the consumer entirely. I started this project
-as little more than a rage against the machine, a whinge about the state of computing in general, and a wishlist of things
-I wanted to see emerge in the PC space over the next ten years. It has since morphed into a fully featured, standardised
-compute platform, and something that both I and my colleagues should be proud of. We invite industry players to join us
-in more fully defining the Common RISC Platform with us. All contributions are welcome and will be taken into consideration.
+Apple's M1 Macs are, to me, a glimpse into the future of the client computer. Incredible performance and efficiency, at
+the cost of total vendor lock-in, the utter destruction of consumer choice, and the atomisation of the ecosystem along platform
+allegiances.
+
+I conceived the Common RISC Platform as a sort of spiritual successor to the PC for a post-x86 world. A platform that promotes
+interoperability and user freedom, while also enabling vendors to innovate, develop their hardware, and compete with other
+vendors in a fair and open way. This project has been and still is a labour of love for me, as well as the people who helped
+me flesh it out while it was still in its infancy. 
 
 \newpage
 
@@ -77,6 +72,7 @@ For the entirety of this document, it is assumed that the reader is familiar wit
 	\item Coreboot
 	\item ATX and derivative motherboard form factors
 	\item Coreboot
+	\item ACPI power management
 \end{itemize}
 
 If the reader is only interested in the Common RISC Platform as an academic exercise, then intricate knowledge of these
@@ -188,9 +184,9 @@ simple, yet highly flexible and customisable platform. The CRP mandates certain 
 between all implementations to ensure full compatibility, however implementations are also highly customisable in terms
 of feature implementation to ensure vendors can cost-effectively implement competitive CRP systems.
 
-We provide to you the Common RISC Platform entirely free of any charge or licensing agreement. We do this in the hopes
+We intend to fully open-source the Common RISC Platform under a strong copyleft license. We do this in the hopes
 that the industry recognise the advantages of a universal, vendor-agnostic platform, and that making its adoption as
-painless as possible encourages vendors to compete not on the strengths of their Bernaysian marketing teams, but on
+painless as possible encourages vendors to compete not on the effectiveness of their Bernaysian marketing, but on
 the strengths of their engineering teams.
 
 \newpage
@@ -198,9 +194,9 @@ the strengths of their engineering teams.
 %----------------------------------------------------------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------------------------------------%
 
-\chapter{System Control Unit}
+\chapter{Main System Package}
 \large
-In the Common RISC Platform, the System Control Unit replaces the traditional CPU. All CRP-compliant SCUs \textbf{must}
+In the Common RISC Platform, the Main System Package replaces the traditional CPU. All CRP-compliant MSPs \textbf{must}
 implement:
 \begin{itemize}
 	\item At least one RISC-V logic core
@@ -214,7 +210,7 @@ This chapter describes how these components should be implemented.
 
 %----------------------------------------------------------------------------------------------------------------------%
 \section{Nomenclature}
-The System Control Unit can be thought of in the same way a modern `CPU' would be. The change in nomenclature reflects the
+The Main System Package can be thought of in the same way a modern `CPU' would be. The change in nomenclature reflects the
 changing role of the CPU in a modern desktop platform. The modern CPU package typically integrates the various I/O controllers
 traditionally found on the motherboard's northbridge, as well as increasing numbers of fixed-function units to accelerate
 specific tasks like cryptography. We initially considered prescribing the return of the Northbridge to handle I/O and memory
@@ -227,29 +223,21 @@ reasons -- the `CPUs' of today are already employing advanced packaging techniqu
 unique ICs that are interconnected. Likewise, the term `SoP' is equally inaccurate as many devices will indeed remain
 integrated, monolithic ICs. Additionally, neither term truly reflects devices that more closely resemble traditional CPUs.
 
-We believe that the term System Control Unit represents a more accurate description of the device's job in a modern
-computer system that embraces the princples of heterogeneous compute -- execute the control logic of running software and
-direct that software's data to the appropriate accelerator for processing. Of course, that is not to say that the SCU cannot
-be an integrated system, or be designed for high compute performance. In fact, we encourage SCU vendors to continue
-pushing the boundaries of general purpose compute performance as much as possible. However, we must also recognise that
-the modern device that shares a name with the CPUs of days past bears little functional resemblance to those older devices,
-and its name should reflect that.
-
 \section{Minimum Logic Implementation}
-Common RISC Platform SCUs shall contain \textbf{at least one} RISC-V core that fully implements the \textbf{RV64GC} Instruction
+Common RISC Platform MSPs shall contain \textbf{at least one} RISC-V core that fully implements the \textbf{RV64GC} Instruction
 Set. This is the superset of RV64I, M, A, F, D, Zicsr, Zifencei, and C instruction sets. This is the minimum instruction
 set necessary to cleanly boot a Linux userspace targeted at RISC-V. Core vendors may choose to implement other RISC-V
 extensions based on their target market, however subsets are strictly forbidden. All other design decisions are at the
 sole discretion of the designer.
 
 Devices that employ microcode as part of their design must store the code on package. As the Platform Initialisation
-system is designed to be interoperable, SCU-specific microcode cannot be stored to and loaded from the ROM on the
+system is designed to be interoperable, MSP-specific microcode cannot be stored to and loaded from the ROM on the
 motherboard as is possible with the current PC platform.
 
 \rule{16cm}{0.4pt}\\
 \small
 \textbf{IMP. DEP. \#1\:}
-Core/SCU designers are free to implement additional RISC-V Instruction Sets as they see fit, however subsets are
+Core/MSP designers are free to implement additional RISC-V Instruction Sets as they see fit, however subsets are
 strictly forbidden.\\
 \textbf{IMP. DEP\#2\:}
 Vendors of logic devices that use microcode are encouraged to make that code publicly available for audit. Vendors are
@@ -259,28 +247,30 @@ also encouraged to store microcode on EEPROM, and provide utilities that allow t
 \newpage
 
 \section{Memory Controller}
-The Common RISC Platform uses JEDEC DDR5 SDRAM for main system memory. In keeping with current desktop platforms, the SCU
+The Common RISC Platform uses JEDEC DDR5 SDRAM for main system memory. In keeping with current desktop platforms, the MSP
 shall implement a dual-channel DDR5 memory controller for communicating with the system memory. Implementation details
 are at the discretion of the vendor.
 
 \section{System Communication}
-The Common RISC Platform prescribes a univeral SCU socket, CRP-1. All compliant SCUs must be electrically and physically
-compatible with the CRP-1 socket, as described under \textbf{MOTHERBOARD CHAPTER POINTER GOES HERE}.
+The Common RISC Platform prescribes a univeral MSP socket, CRP-1. All compliant MSPs must be electrically and physically
+compatible with the CRP-1 socket, as described under \textbf{link to socket chapter}.
 
-The SCU shall accept two voltage inputs -- $V_{CORE}$ and $V_{UNCORE}$. SCU-VRM communications are explained in detail
-in \textbf{POWER DELIVERY CHAPTER GOES HERE}. The SCU will, at stock settings, draw no more than 85W from the socket.
+The MSP shall accept two voltage inputs -- $V_{DDC}$ and $V_{DDIO}$. MSP-VRM communications are explained in detail
+in \textbf{POWER DELIVERY CHAPTER GOES HERE}. The MSP will, at stock settings, draw no more than 85W from the socket.
 
-The SCU must expose a PCI Express Root Complex. Most off-package communication with other system components must be done
-through the PCI Express fabric. The Root Complex must expose 48 lanes to the system. 40 of these lanes may be flexibly
-assigned by motherboard vendors for , and the remaining 8 are reserved for interfacing with
+The MSP must expose a PCI Express Root Complex. Most off-package communication with other system components must be done
+through the PCI Express fabric. The Root Complex must expose 40 lanes to the system. 36 of these lanes may be flexibly
+assigned by motherboard vendors for any PCIe socket, and the remaining 4 are reserved for interfacing with
 the Platform Hub. The CRP-1 pinout allocates specific pins for each category of lane. Other interconnects must communicate
-with the SCU through the Platform Hub. This is described in depth in \textbf{MOTHERBOARD CHAPTER GOES HERE}.
+with the MSP through the Platform Hub. This is described in depth in \textbf{MOTHERBOARD CHAPTER GOES HERE}.
 
-The SCU must also expose a USB4 Host Controller. SCUs that implement a GPU on package must use USB4 DisplayPort Alternate
+The MSP must also expose a USB4 Host Controller. MSPs that implement a GPU on package must use USB4 DisplayPort Alternate
 Mode for display output. All boards, regardless of other design decisions, must implement at least one USB Type-C connector
-on the rear I/O panel connected directly to the SCU Host Controller such that any board can be fully compatible with
-any SCU, including those with integrated graphics.
+on the rear I/O panel connected directly to the MSP Host Controller such that any board can be fully compatible with
+any MSP, including those with integrated graphics.
 
+Out of band signalling for the purposes of platform initialisation, power management and inter-chip communications shall
+be accomplished through the eSPI bus, or via I2C.
 %----------------------------------------------------------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------------------------------------%
@@ -294,7 +284,7 @@ any SCU, including those with integrated graphics.
 \section{Specifications}
 All CRP-compliant motherboards shall use \textbf{coreboot} for platform initialisation. Systems must support all coreboot
 payloads, and no CRP-compliant device shall prevent the execution of any payload under any circumstances. The coreboot
-image shall be stored on a socketed 64Mb EEPROM chip. Additionally, compliant boards shall not prevent the user from
+image shall be stored on a \textbf{socketed} 256Mb EEPROM chip. Additionally, compliant boards shall not prevent the user from
 replacing the manufacturer-provided PI firmware with any compatible firmware image from third parties.
 
 Motherboard vendors are encouraged to open source their coreboot images  
@@ -303,7 +293,7 @@ Motherboard vendors are encouraged to open source their coreboot images
 \small
 \textbf{IMP. DEP. \#3\:}
 A CRP-compliant coreboot may or may not provide a pre-payload user interface that allows for platform settings to be
-customised, e.g. a coreboot may have facilities that allow the user to overclock their SCU and memory.\\
+customised, e.g. a coreboot may have facilities that allow the user to overclock their MSP and memory.\\
 \normalsize
 \rule{16cm}{0.4pt}
 
@@ -316,13 +306,14 @@ customised, e.g. a coreboot may have facilities that allow the user to overclock
 
 \chapter{The CRP-1 Socket}
 \large
-The CRP-1 socket defines a standard interconnect for all SCUs. This chapter describes the physical and electrical
+The CRP-1 socket defines a standard interconnect for all MSPs. This chapter describes the physical and electrical
 characteristics of the CRP-1 socket.
 \normalsize
 \newpage
 %----------------------------------------------------------------------------------------------------------------------%
 \section{Physical Description}
-CRP-1 is a Land Grid Array socket with 2000 pins, each with a diameter of 0.75mm and a pitch of 1mm. 
+CRP-1 is a Pin Grid Array socket with 2155 pin positions, each with a diameter of 0.5mm and a pitch of 1mm. CRP-1 is arranged
+in a square grid of 49 pins by 49 with multiple key positions to ensure that packages can only be inserted correctly. 
 
 
 \end{document}
