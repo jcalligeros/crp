@@ -1,0 +1,8 @@
+**/*.tex
+**/*.log
+**/*.fdb_latexmk
+**/*.aux
+**/*.toc
+**/*.synctex.gz
+**/*.log
+**/*.fls
