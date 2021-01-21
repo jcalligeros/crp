@@ -31,32 +31,43 @@
 
 %----------------------------------------------------------------------------------------------------------------------%
 \section{Preface}
-The client desktop computer market is at a crossroads. Recent advancements in technology have, for the first time since
-the mid 90s, given the PC an existential threat -- certain RISC-based chips are now consistently outperforming certain
-x86-based solutions, and both developers and consumers alike are noticing this. Many people are abandoning their desktop
-and laptop computers, happy to instead rely on their smartphones and tablets. Both of these types of devices usually contain
-some ARM-based SoC. x86-based PCs continue to endure in the high-performance and enthusiast markets, but for how long?
+\textit{Adapted from the first public post in the CRP development blog}
+It cannot have gone unnoticed by many that the PC as a platform is under siege. For the past few years, development on
+RISC-V and ARM based SoCs has continued at a blinding pace, while improvements in the x86 world have somewhat stagnated.
+It is also easy to see how vendors of such chips have been using this opportunity to either develop or reinforce existing
+closed-loop ecosystems. One need only look at Apple’s recent release of its M1-based Macs for an example of this.
 
-Ask any PC enthusiast why they continue to use the platform despite `better' alternatives existing, and they'll mostly
-respond with something related to customisation. Traditionally, the PC platform has been the most flexible -- users can
-usually replace their GPU, system memory, mass storage and other components at will. While this flexibility has been somewhat
-eroded in recent times (e.g. one can no longer drop an AMD package into an Intel-socketed motherboard), the platform
-remains more flexible than any other comparable alternative.
+Thus, I have come to the conclusion that the PC as we know will be gone by the end of the decade. Rather than simply lie down
+and let the likes of Apple push us into a hellish dystopia of closed platforms, planned obsolescence and soldered-on-board
+mass storage, I believe that it is in the industry’s best interests if a free, open and fair standard platform were to be developed.
 
-As RISC-based SoCs begin to outperform even high-end x86-based chips, there is a real risk that SoC vendors use the opportunity
-to develop closed, locked down platforms that fly in the face of everything the PC stands for. This of course would have serious
-implications for not only users but also developers of open hardware and software, as their projects become increasingly fragmented
-in order to support multiple disparate
+It would surprise many to learn that there once was a time when users could replace their P5 Pentiums with an AMD K6 or Cyrix
+6x86 without changing anything else about the system. These days of course are long gone, giving way to the mess of chipset and
+socket changes we’re more familiar with today.
 
-Apple's M1 Macs are, to me, a glimpse into the future of the client computer. Incredible performance and efficiency, at
-the cost of total vendor lock-in, the utter destruction of consumer choice, and the atomisation of the ecosystem along platform
-allegiances.
+While the PC itself may be heading into its sunset years, this does not mean that open computing is dead. Far from it, in fact.
+I have noticed an ever-increasing interest from both the general populace and industry players in open-source hardware and ISAs like
+Power and RISC-V. Unfortunately, development seems to be quite stagnant in terms of developing products the average consumer would
+actually want to use.
 
-I conceived the Common RISC Platform as a sort of spiritual successor to the PC for a post-x86 world. A platform that promotes
-interoperability and user freedom, while also enabling vendors to innovate, develop their hardware, and compete with other
-vendors in a fair and open way. This project has been and still is a labour of love for me, as well as the people who helped
-me flesh it out while it was still in its infancy. 
+Most RISC-V based boards are little more than glorified prototyping boards, with next to no extensibility or consumer-friendly features.
+On the other end of the spectrum we have the burgeoning market of Power ISA machines. While some of these are definitely a step in the
+right direction, software support for Power ISA is still very limited, and despite being RISC in name, the ISA itself is extremely
+complex and not well suited for simple/efficient consumer devices. Not only this, but many of the currently existing systems are focused
+more on the server/HPC market, foregoing I/O and design choices that would make them more appealing to the consumer market.
 
+In my opinion, this fragmentation of the industry is just as bad as the closed-loop ARM ecosystems of the mobile space. At the end
+of the day, development work is still divided and consumers are still forced into a platform catered to a niche.
+
+In my mind, the only way forward for the client compute industry is for an open, flexible and extensible platform to be adopted
+industry-wide. A platform that closely emulates the PC philosophy, but simplifies and modernises the technical underpinnings to prepare
+for the future of computing post-PC. A platform that defines a common set of hardware and standards to allow both software and
+hardware vendors the freedom to develop products for a standard lowest common denominator, and to reach a broad market. A platform that
+gives the user total and utter freedom over their machine.
+
+We are at a crossroads in the industry, and I strongly believe that a user-led revolt against the status quo is what’s needed to
+demonstrate that the current trend towards proprietary ecosystems is not acceptable to users, nor will it be beneficial in the
+long-term to the vendors’ bottom lines.
 \newpage
 
 
