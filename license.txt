@@ -1,4 +1,4 @@
-The Common RISC Platform License
+The Common RISC Platform License 1.0
 
 Your use of the Common RISC Platform is governed by this license. By downloading,
 reading, or in any other way consuming the Common RISC Platform Specification or
@@ -15,14 +15,12 @@ in your reproductions.
 
 You are also granted permission to use the Common RISC Platform name, branding 
 and other terminology to advertise products you create that are based upon the
-Specification. 
+Specification.
 
 Limited permission is granted for the MODIFICATION of the Common RISC Platform.
 By modifying the Specification in ANY WAY, you revoke your rights to use the
 Common RISC Platform name, branding and other terminology as granted in the
 previous clause.
-
-ANY modifications you make to the Specification MUST be made freely available
 
 Your modifications to the Specification may be formally adopted as part of the
 standard, subject to the approval of the maintainers.
@@ -30,3 +28,7 @@ standard, subject to the approval of the maintainers.
 Any products you produce which utilise ALL or ANY PART OF the Specification MUST
 include a copy of this license and extend the rights and terms granted therein
 to the user IN THEIR ENTIRETY.
+
+Any modifications to, or derivatives of, the Specification shall be made freely
+and publicly available, and MUST be adhere to -- and be bound by -- the terms of
+this license.
